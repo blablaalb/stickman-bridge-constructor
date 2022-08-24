@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
         if (_waitForBridge)
         {
             _bridge = _bridgePool.Get();
+            _bridge.gameObject.SetActive(true);
             _bridge.StartBuilding(_building.BuildingEnd.transform.position, Run);
         }
     }

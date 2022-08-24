@@ -24,7 +24,7 @@ public class Building : PoolMember<BuildingPool>
         _width = _collider.size.x;
     }
 
-    internal void OnCollisionEnter2D(Collision2D other)
+    internal void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<PlayerController>() is PlayerController player)
         {
@@ -32,7 +32,7 @@ public class Building : PoolMember<BuildingPool>
         }
     }
 
-    internal void OnCollisionExit2D(Collision2D other)
+    internal void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<PlayerController>() is PlayerController player)
         {
@@ -53,7 +53,8 @@ public class Building : PoolMember<BuildingPool>
 
         if (transform.position.x < Camera.main.transform.position.x && !_collider.SeenByCamera())
         {
-            // base.ReturnToPool();
+            _endReached = false;
+            base.ReturnToPool();
         }
     }
 

@@ -9,7 +9,7 @@ public class TrackConstructor : Singleton<TrackConstructor>
     private BuildingPool _buildingPool;
     private Building _lastBuilding;
     private Vector3 _firstBuildingPosition = Vector3.zero;
-    private int _instantiatedCount;
+    private int _buildingsCount;
     [SerializeField]
     private FloatRange _distanceRange;
     [SerializeField]
@@ -32,7 +32,7 @@ public class TrackConstructor : Singleton<TrackConstructor>
 
     internal void Start()
     {
-        foreach (var b in AddBuildings(3)) { }
+        foreach (var b in AddBuildings(5)) { }
     }
 
     public Building AddBuilding()
@@ -44,6 +44,7 @@ public class TrackConstructor : Singleton<TrackConstructor>
         building.transform.position = position;
         building.gameObject.SetActive(true);
         _lastBuilding = building;
+        _buildingsCount++;
         return building;
     }
 

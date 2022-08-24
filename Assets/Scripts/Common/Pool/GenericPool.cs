@@ -7,13 +7,13 @@ public abstract class GenericPool<T> : MonoBehaviour, IPool where T : MonoBehavi
 {
     [SerializeField]
     protected GameObject prefab;
-    private Stack<T> _pool;
+    protected List<T> pool;
 
     public Type MemberType => typeof(T);
 
     virtual protected void Awake()
     {
-        _pool = new Stack<T>(10);
+        pool = new List<T>(10);
     }
 
     /// <summary>
@@ -23,9 +23,11 @@ public abstract class GenericPool<T> : MonoBehaviour, IPool where T : MonoBehavi
     virtual public T Get()
     {
         T obj;
-        if (_pool.Count > 0)
+        if (pool.Count > 0)
         {
-            obj = _pool.Pop();
+
+            obj = pool[0];
+            pool.RemoveAt(0);
         }
         else
         {
@@ -40,11 +42,11 @@ public abstract class GenericPool<T> : MonoBehaviour, IPool where T : MonoBehavi
     /// <param name="obj"></param>
     virtual public void Add(T obj)
     {
-        if (!_pool.Contains(obj))
+        if (!pool.Contains(obj))
         {
             obj.gameObject.SetActive(false);
-            _pool.Push(obj);
-            Debug.Log($"Adding {obj.name} to pool", obj);
+            pool.Add(obj);
+            // Debug.Log($"Adding {obj.name} to pool", obj);
         }
     }
 
@@ -63,7 +65,7 @@ public abstract class GenericPool<T> : MonoBehaviour, IPool where T : MonoBehavi
     /// Instantiates a new game object from the given prefab and returns component of the required type.
     /// </summary>
     /// <returns>Required component from the instantiated game object.</returns>
-    private T InstantiateNew()
+    protected T InstantiateNew()
     {
         if (prefab == null)
         {
