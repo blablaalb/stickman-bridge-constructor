@@ -5,5 +5,4 @@ using Common;
 
 public class GameManager : Singleton<GameManager>
 {
-
 }

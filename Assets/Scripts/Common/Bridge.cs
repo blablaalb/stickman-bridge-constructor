@@ -29,12 +29,12 @@ public class Bridge : PoolMember<BridgePool>
     {
         if (_build) PerformBuilding();
 
-        if (!_collider.SeenByCamera())
-        {
-            transform.localScale = _defaultScale;
-            transform.rotation = Quaternion.Euler(_defaultRotation);
-            base.ReturnToPool();
-        }
+        // if (!_collider.SeenByCamera())
+        // {
+        //     transform.localScale = _defaultScale;
+        //     transform.rotation = Quaternion.Euler(_defaultRotation);
+        //     base.ReturnToPool();
+        // }
     }
 
     public void StartBuilding(Vector2 position, Action onComplete)
@@ -47,7 +47,7 @@ public class Bridge : PoolMember<BridgePool>
     public void StopBuilding()
     {
         _build = false;
-        transform.DORotate(_fullRotation, _rotationTime).OnComplete(() =>
+        transform.DORotate(_fullRotation, _rotationTime).SetEase(Ease.OutBounce). OnComplete(() =>
             {
                 _onComplete?.Invoke();
                 _onComplete = null;

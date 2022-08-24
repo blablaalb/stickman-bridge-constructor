@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     private Bridge _bridge;
     private Building _building;
     private bool _waitForBridge;
+    private Rigidbody2D _rb;
+    private Collider2D _collider;
+    private RaycastHit2D[] _collidersBelow;
 
     internal void Awake()
     {
@@ -19,6 +22,9 @@ public class PlayerController : MonoBehaviour
         _characterAnimation = GetComponentInChildren<CharacterAnimation>();
         _hammer = GetComponentInChildren<Hammer>();
         _bridgePool = FindObjectOfType<BridgePool>();
+        _rb = GetComponent<Rigidbody2D>();
+        _collider = GetComponent<Collider2D>();
+        _collidersBelow= new RaycastHit2D[2];
     }
 
     internal void Start()
@@ -49,6 +55,20 @@ public class PlayerController : MonoBehaviour
     {
         _characterMovement.Stop();
         _characterAnimation.Idle();
+    }
+
+    internal void FixedUpdate()
+    {
+        var startPosition = transform.position;
+        startPosition.y += 0.5f;
+
+        if (_collider.Raycast(Vector2.down, _collidersBelow, 100f) <= 0)
+        {
+            var velocity = _rb.velocity;
+            velocity.y -= 1f;
+            _rb.velocity = velocity;
+            Debug.Log("Failing");
+        }
     }
 
     public void OnBuildingEndReached(Building building)

@@ -16,7 +16,7 @@ public class CharacterMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
     }
 
-    internal void Update()
+    internal void FixedUpdate()
     {
         if (_run)
             PerformRun();

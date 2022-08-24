@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour
+public class Building : PoolMember<BuildingPool>
 {
     [SerializeField]
     private GameObject _buildingEnd;
@@ -10,10 +10,19 @@ public class Building : MonoBehaviour
     private float _distanceThrehsold;
     private PlayerController _character;
     private bool _endReached;
-
+    private BoxCollider2D _collider;
+    private float _width;
 
     public GameObject BuildingEnd => _buildingEnd;
+    public float Width => _width;
 
+
+    override protected void Awake()
+    {
+        base.Awake();
+        _collider = GetComponent<BoxCollider2D>();
+        _width = _collider.size.x;
+    }
 
     internal void OnCollisionEnter2D(Collision2D other)
     {
@@ -22,7 +31,6 @@ public class Building : MonoBehaviour
             _character = player;
         }
     }
-
 
     internal void OnCollisionExit2D(Collision2D other)
     {
@@ -41,6 +49,11 @@ public class Building : MonoBehaviour
                 _endReached = true;
                 _character.OnBuildingEndReached(this);
             }
+        }
+
+        if (transform.position.x < Camera.main.transform.position.x && !_collider.SeenByCamera())
+        {
+            // base.ReturnToPool();
         }
     }
 
