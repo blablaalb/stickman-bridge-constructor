@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(CharacterMovement))]
 public class PlayerController : MonoBehaviour
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
         _bridgePool = FindObjectOfType<BridgePool>();
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
-        _collidersBelow= new RaycastHit2D[2];
+        _collidersBelow = new RaycastHit2D[2];
     }
 
     internal void Start()
@@ -73,10 +74,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnBuildingEndReached(Building building)
     {
-        Stop();
-        _hammer.PlayAnimation();
-        _waitForBridge = true;
-        _building = building;
+        if (!OnBridge())
+        {
+            Stop();
+            _hammer.PlayAnimation();
+            _waitForBridge = true;
+            _building = building;
+        }
     }
 
     private void OnMouseDown()
@@ -98,6 +102,23 @@ public class PlayerController : MonoBehaviour
             _bridge = null;
             _hammer.Hide();
         }
+    }
+
+    private bool OnBridge()
+    {
+        var downColliders = new RaycastHit2D[10];
+        if (_collider.Raycast(Vector2.down, downColliders, 10f) > 0)
+        {
+            if (downColliders != null)
+            {
+                if (downColliders.Any(x => x.transform != null && x.transform.GetComponentInParent<Bridge>()))
+                {
+                    Debug.Log("Standing on bridge");
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 

@@ -40,14 +40,14 @@ public class Bridge : PoolMember<BridgePool>
     public void StartBuilding(Vector2 position, Action onComplete)
     {
         _onComplete = onComplete;
-        transform.position = position;
+        transform.position = new Vector3(position.x, position.y, -1);
         _build = true;
     }
 
     public void StopBuilding()
     {
         _build = false;
-        transform.DORotate(_fullRotation, _rotationTime).SetEase(Ease.OutBounce). OnComplete(() =>
+        transform.DORotate(_fullRotation, _rotationTime).SetEase(Ease.OutBounce).OnComplete(() =>
             {
                 _onComplete?.Invoke();
                 _onComplete = null;

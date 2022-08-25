@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buildingEnd: {fileID: 4012335356427152897}
-  _distanceThrehsold: 1
+  _distanceThrehsold: 0.1
 --- !u!61 &6067078801077800976
 BoxCollider2D:
   m_ObjectHideFlags: 0
