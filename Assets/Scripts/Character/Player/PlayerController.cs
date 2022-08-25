@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 [RequireComponent(typeof(CharacterMovement))]
 public class PlayerController : MonoBehaviour
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private Collider2D _collider;
     private RaycastHit2D[] _collidersBelow;
+    private Coroutine _onBridgeCoroutine;
 
     internal void Awake()
     {
@@ -70,6 +72,16 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = velocity;
             Debug.Log("Failing");
         }
+
+        if (OnBridge() && _onBridgeCoroutine == null)
+        {
+            _onBridgeCoroutine = StartCoroutine(WaitUntilBridgePassed(() =>
+            {
+                Debug.Log("Bridge passed");
+                GameManager.Instance.OnBridgePassed();
+                _onBridgeCoroutine = null;
+            }));
+        }
     }
 
     public void OnBuildingEndReached(Building building)
@@ -81,6 +93,17 @@ public class PlayerController : MonoBehaviour
             _waitForBridge = true;
             _building = building;
         }
+    }
+
+    private IEnumerator WaitUntilBridgePassed(Action callback)
+    {
+        var wait = new WaitForEndOfFrame();
+        while (OnBridge())
+        {
+            yield return wait;
+        }
+        if (OnBuilding())
+            callback?.Invoke();
     }
 
     private void OnMouseDown()
@@ -113,7 +136,22 @@ public class PlayerController : MonoBehaviour
             {
                 if (downColliders.Any(x => x.transform != null && x.transform.GetComponentInParent<Bridge>()))
                 {
-                    Debug.Log("Standing on bridge");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool OnBuilding()
+    {
+        var downColliders = new RaycastHit2D[10];
+        if (_collider.Raycast(Vector2.down, downColliders, 10f) > 0)
+        {
+            if (downColliders != null)
+            {
+                if (downColliders.Any(x => x.transform != null && x.transform.GetComponentInParent<Building>()))
+                {
                     return true;
                 }
             }
