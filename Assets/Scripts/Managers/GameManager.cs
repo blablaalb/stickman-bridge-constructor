@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    private AudioSource _audSrc;
+    [SerializeField]
+    private AudioClip _sucessAudClip;
     private PlayerController _playerController;
     public int BridgePassedCount { get; set; }
     public event Action BridgePassed;
@@ -17,6 +20,7 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         _playerController = FindObjectOfType<PlayerController>();
+        _audSrc = GetComponent<AudioSource>();
     }
 
 
@@ -24,6 +28,7 @@ public class GameManager : Singleton<GameManager>
     {
         BridgePassedCount++;
         BridgePassed?.Invoke();
+        _audSrc.PlayOneShot(_sucessAudClip);
     }
 
     public void OnPlayerFallen()

@@ -17,11 +17,16 @@ public class Bridge : PoolMember<BridgePool>
     private Vector3 _defaultScale = new Vector3(1, 0, 1);
     private Vector3 _defaultRotation = Vector3.zero;
     private Vector3 _fullRotation = new Vector3(0, 0, -90);
+    [SerializeField]
+    private AudioClip _hammerSlam;
+    private AudioSource _audSrc;
 
 
     override protected void Awake()
     {
         base.Awake();
+        _audSrc = GetComponent<AudioSource>();
+        _audSrc.clip = _hammerSlam;
         _collider = GetComponentInChildren<Collider2D>();
     }
 
@@ -51,9 +56,9 @@ public class Bridge : PoolMember<BridgePool>
 
     public void StartBuilding(Vector2 position, Action onComplete)
     {
+        _build = true;
         _onComplete = onComplete;
         transform.position = new Vector3(position.x, position.y, -1);
-        _build = true;
     }
 
     public void StopBuilding()
@@ -65,6 +70,7 @@ public class Bridge : PoolMember<BridgePool>
                 _onComplete = null;
             }
         );
+        _audSrc.Stop();
     }
 
     private void PerformBuilding()
@@ -75,6 +81,11 @@ public class Bridge : PoolMember<BridgePool>
         scale.y += _scaleSpeed * Time.deltaTime;
         scale.y = Mathf.Clamp(scale.y, min, max);
         transform.localScale = scale;
+        if (!_audSrc.isPlaying)
+        {
+            _audSrc.pitch = UnityEngine.Random.Range(0.9f, 2f);
+            _audSrc.Play();
+        }
     }
 
     override public void ReturnToPool()
