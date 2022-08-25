@@ -374,7 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _distanceRange:
     Min: 1
-    Max: 5
+    Max: 10
   _generationDistanceThreshold: 5
 --- !u!1 &359666851
 GameObject:

@@ -21,7 +21,7 @@ public class Building : PoolMember<BuildingPool>
     {
         base.Awake();
         _collider = GetComponent<BoxCollider2D>();
-        _width = _collider.size.x;
+        _width = _collider.size.x * transform.localScale.x;
     }
 
     internal void Start()

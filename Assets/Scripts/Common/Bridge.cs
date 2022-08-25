@@ -69,8 +69,11 @@ public class Bridge : PoolMember<BridgePool>
 
     private void PerformBuilding()
     {
+        var min = 0.1f;
+        var max = TrackConstructor.Instance.BuildingsDistanceRange.Max;
         var scale = transform.localScale;
         scale.y += _scaleSpeed * Time.deltaTime;
+        scale.y = Mathf.Clamp(scale.y, min, max);
         transform.localScale = scale;
     }
 

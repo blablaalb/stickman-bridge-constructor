@@ -42,7 +42,7 @@ public class TrackConstructor : Singleton<TrackConstructor>
         var building = _buildingPool.Get();
         var distance = _distanceRange.Random();
         var position = _lastBuilding ? _lastBuilding.BuildingEnd.transform.position : _firstBuildingPosition;
-        position.x += distance + building.Width * building.transform.localScale.x;
+        position.x += distance + building.Width * 0.5f;
         building.transform.position = position;
         building.gameObject.SetActive(true);
         _lastBuilding = building;
