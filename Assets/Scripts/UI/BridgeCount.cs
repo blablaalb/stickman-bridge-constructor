@@ -11,6 +11,10 @@ public class BridgeCount : MonoBehaviour
     {
         _tmPro = GetComponent<TextMeshProUGUI>();
         _tmPro.SetText("0");
+    }
+
+    internal void Start()
+    {
         GameManager.Instance.BridgePassed += OnBridgePassed;
     }
 
