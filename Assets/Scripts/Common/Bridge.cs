@@ -25,16 +25,28 @@ public class Bridge : PoolMember<BridgePool>
         _collider = GetComponentInChildren<Collider2D>();
     }
 
+    internal void Start()
+    {
+        GameManager.Instance.Respawned += OnPlayerRespanwed;
+    }
+
     internal void Update()
     {
         if (_build) PerformBuilding();
 
         if (!_collider.SeenByCamera())
         {
-            transform.localScale = _defaultScale;
-            transform.rotation = Quaternion.Euler(_defaultRotation);
-            base.ReturnToPool();
+            ReturnToPool();
         }
+    }
+
+    internal void OnDestroy()
+    {
+        try
+        {
+            GameManager.Instance.Respawned -= OnPlayerRespanwed;
+        }
+        catch { }
     }
 
     public void StartBuilding(Vector2 position, Action onComplete)
@@ -62,5 +74,16 @@ public class Bridge : PoolMember<BridgePool>
         transform.localScale = scale;
     }
 
+    override public void ReturnToPool()
+    {
+        transform.localScale = _defaultScale;
+        transform.rotation = Quaternion.Euler(_defaultRotation);
+        base.ReturnToPool();
+    }
+
+    private void OnPlayerRespanwed()
+    {
+        ReturnToPool();
+    }
 
 }

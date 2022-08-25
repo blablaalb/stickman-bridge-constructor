@@ -22,12 +22,12 @@ public class UIManager : MonoBehaviour
         catch { }
     }
 
-    private void OpenGameoverScreen()
+    public void OpenGameoverScreen()
     {
         _gameOverScreen.SetActive(true);
     }
 
-    private void CloseGameoverScreen()
+    public void CloseGameoverScreen()
     {
         _gameOverScreen.SetActive(false);
     }

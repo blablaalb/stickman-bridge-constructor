@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     private RaycastHit2D[] _collidersBelow;
     private Coroutine _onBridgeCoroutine;
 
+    public Building LastBuilding => _building;
+
+
     internal void Awake()
     {
         _characterMovement = GetComponent<CharacterMovement>();
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour
     {
         InputManager.Instance.MouseDown += OnMouseDown;
         InputManager.Instance.MouseUp += OnMouseUp;
+        GameManager.Instance.PlayerFell += OnPlayerFallen;
 
         Run();
     }
@@ -44,6 +48,7 @@ public class PlayerController : MonoBehaviour
         {
             InputManager.Instance.MouseDown -= OnMouseDown;
             InputManager.Instance.MouseUp -= OnMouseUp;
+            GameManager.Instance.PlayerFell -= OnPlayerFallen;
         }
         catch { }
     }
@@ -65,12 +70,12 @@ public class PlayerController : MonoBehaviour
         var startPosition = transform.position;
         startPosition.y += 0.5f;
 
-        if (_collider.Raycast(Vector2.down, _collidersBelow, 100f) <= 0)
+        if (_collider.Raycast(Vector2.down, _collidersBelow, 1.5f) <= 0)
         {
             var velocity = _rb.velocity;
             velocity.y -= 1f;
             _rb.velocity = velocity;
-            Debug.Log("Failing");
+            Debug.Log("Falling");
         }
 
         if (OnBridge() && _onBridgeCoroutine == null)
@@ -79,7 +84,6 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Bridge passed");
                 GameManager.Instance.OnBridgePassed();
-                _onBridgeCoroutine = null;
             }));
         }
     }
@@ -102,6 +106,7 @@ public class PlayerController : MonoBehaviour
         {
             yield return wait;
         }
+        _onBridgeCoroutine = null;
         if (OnBuilding())
             callback?.Invoke();
     }
@@ -159,5 +164,19 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    public void Respawn()
+    {
+        var position = _building.transform.position;
+        position.y = 0.15f;
+        _rb.velocity = Vector3.zero;
+        transform.position = position;
+        Run();
+        GameManager.Instance.OnPlayerRespawned();
+    }
+
+    private void OnPlayerFallen()
+    {
+        Stop();
+    }
 
 }

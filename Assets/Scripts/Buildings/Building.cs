@@ -24,6 +24,20 @@ public class Building : PoolMember<BuildingPool>
         _width = _collider.size.x;
     }
 
+    internal void Start()
+    {
+        GameManager.Instance.Respawned += OnPlayerRespawned;
+    }
+
+    internal void OnDestroy()
+    {
+        try
+        {
+            GameManager.Instance.Respawned -= OnPlayerRespawned;
+        }
+        catch { }
+    }
+
     internal void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<PlayerController>() is PlayerController player)
@@ -51,12 +65,16 @@ public class Building : PoolMember<BuildingPool>
             }
         }
 
-        if (transform.position.x < Camera.main.transform.position.x && !_collider.SeenByCamera())
+        if (transform.position.x < Camera.main.transform.position.x + -20f && !_collider.SeenByCamera())
         {
             _endReached = false;
             base.ReturnToPool();
         }
     }
 
+    private void OnPlayerRespawned()
+    {
+        _endReached = false;
+    }
 
 }

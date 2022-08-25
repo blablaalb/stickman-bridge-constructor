@@ -15,6 +15,8 @@ public class TrackConstructor : Singleton<TrackConstructor>
     [SerializeField]
     private float _generationDistanceThreshold;
 
+    public FloatRange BuildingsDistanceRange => _distanceRange;
+
     override protected void Awake()
     {
         base.Awake();

@@ -5,7 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 
-public abstract class PoolMember<T> : MonoBehaviour where T:IPool
+public abstract class PoolMember<T> : MonoBehaviour where T : IPool
 {
     private IPool _pool;
     private MonoBehaviour _member;
@@ -15,7 +15,7 @@ public abstract class PoolMember<T> : MonoBehaviour where T:IPool
         _pool = FindObjectOfType(typeof(T)) as IPool;
     }
 
-    public void ReturnToPool()
+    virtual public void ReturnToPool()
     {
         _pool.Add(this.gameObject);
     }
